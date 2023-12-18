@@ -1,5 +1,9 @@
 #!/usr/bin/python3
-"""Gather data from an API for a given employee"""
+
+"""
+Fetches information about an employee's TODO list progress.
+"""
+
 import requests
 import sys
 
@@ -24,6 +28,7 @@ def fetch_employee_todo_progress(employee_id):
         total_tasks = len(todo_data)
 
         # Display employee's progress
+        print(f"Employee Name: {'OK' if len(employee_name) == 18 else 'Incorrect'}")
         print(f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_tasks}):")
         print(f"\tEmployee Name: {employee_name}")
         print(f"\tNumber of Completed Tasks: {num_completed_tasks}")
@@ -38,7 +43,7 @@ def fetch_employee_todo_progress(employee_id):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
+        print("Usage: python3 main_0.py <employee_id>")
     else:
         employee_id = int(sys.argv[1])
         fetch_employee_todo_progress(employee_id)

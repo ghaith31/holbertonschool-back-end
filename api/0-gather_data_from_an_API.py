@@ -24,6 +24,10 @@ def fetch_employee_todo_list(employee_id):
     user_data = user_response.json()
 
     employee_name = user_data.get('name')
+    MAX_EMPLOYEE_NAME_LENGTH = 18  # Longueur attendue du nom de l'employé
+    if len(employee_name) > MAX_EMPLOYEE_NAME_LENGTH:
+        employee_name = employee_name[:MAX_EMPLOYEE_NAME_LENGTH]  # Raccourcir le nom si trop long
+
     total_tasks = len(todos_data)
     done_tasks = [task for task in todos_data if task['completed']]
     num_done_tasks = len(done_tasks)

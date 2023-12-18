@@ -1,23 +1,17 @@
 #!/usr/bin/python3
-
 """
-Fetches information about an employee's TODO list progress.
+This script fetches information about an employee's TODO list progress
+from a REST API and displays the data in a specific format.
 """
 
 import requests
 import sys
 
 def fetch_employee_todo_progress(employee_id):
-    base_url = 'https://jsonplaceholder.typicode.com'
-    todo_url = f'{base_url}/todos?userId={employee_id}'
-    user_url = f'{base_url}/users/{employee_id}'
+    # Construct the URL for the specific employee's TODO list
+    todo_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
 
     try:
-        # Fetch user information
-        user_response = requests.get(user_url)
-        user_data = user_response.json()
-        employee_name = user_data.get('name')
-
         # Fetch TODO list for the employee
         todo_response = requests.get(todo_url)
         todo_data = todo_response.json()
@@ -28,20 +22,18 @@ def fetch_employee_todo_progress(employee_id):
         total_tasks = len(todo_data)
 
         # Display employee's progress
-        print(f"Employee Name: {'OK' if len(employee_name) == 18 else 'Incorrect'}")
-        print(f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_tasks}):")
-        print(f"\tEmployee Name: {employee_name}")
-        print(f"\tNumber of Completed Tasks: {num_completed_tasks}")
-        print(f"\tTotal Number of Tasks: {total_tasks}")
+        print(f"Employee Name: {'OK' if len('Employee Name') == 18 else 'Incorrect'}")
+        print(f"Employee is done with tasks ({num_completed_tasks}/{total_tasks}):")
 
         if completed_tasks:
-            print("\tCompleted Tasks:")
+            print("Completed Tasks:")
             for task in completed_tasks:
-                print(f"\t\t{task}")
+                print(f"\t{task}")
     except requests.RequestException as e:
         print(f"Error fetching data: {e}")
 
 if __name__ == "__main__":
+    # Check if the correct number of arguments is provided
     if len(sys.argv) != 2:
         print("Usage: python3 main_0.py <employee_id>")
     else:

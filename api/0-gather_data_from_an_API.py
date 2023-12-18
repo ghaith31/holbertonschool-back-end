@@ -1,42 +1,55 @@
 #!/usr/bin/python3
-"""Gather data from an API"""
+"""Gather data from an API for a given employee
+ID and display TODO list progress."""
 import requests
 import sys
 
-def obtenir_progression_todo_employee(id_employe):
-    # Point de terminaison de l'API
-    base_url = 'https://jsonplaceholder.typicode.com'
-    url_todo = f'{base_url}/todos?userId={id_employe}'
 
-    # Obtenir la liste de tâches de l'employé
-    reponse = requests.get(url_todo)
+def to_do(employee_ID):
+    """
+    Retrieve employee information and TODO
+    list progress based on the employee ID.
 
-    if reponse.status_code == 200:
-        todos = reponse.json()
-        reponse_utilisateur = requests.get(f"{base_url}/users/{id_employe}")
-        info_utilisateur = reponse_utilisateur.json()
+    Args:
+        employee_ID (int): The ID of the employee.
 
-        # Filtrer les tâches terminées
-        taches_terminees = [tache for tache in todos if tache['completed']]
-        nombre_taches_terminees = len(taches_terminees)
-        nombre_total_taches = len(todos)
+    Returns:
+        None
 
-        # Afficher l'avancement de l'employé
-        print(f"L'employé {info_utilisateur['name']} a terminé {nombre_taches_terminees}/{nombre_total_taches} tâches :")
-        print(f"Nom de l'employé : {info_utilisateur['name']}")
-        print(f"Nombre de tâches terminées : {nombre_taches_terminees}")
-        print(f"Nombre total de tâches : {nombre_total_taches}")
-        
-        if nombre_taches_terminees > 0:
-            print("Tâches terminées :")
-            for tache in taches_terminees:
-                print(f"\t{tache['title']}")
-    else:
-        print("Impossible de récupérer les données. Veuillez réessayer plus tard.")
+    Prints:
+        Displays the employee's TODO list progress.
+    """
+    url = 'https://jsonplaceholder.typicode.com'
+    employee_url = f"{url}/users/{employee_ID}"
+    todos_url = f"{url}/todos?userId={employee_ID}"
 
-# Vérifier si l'argument (ID de l'employé) est passé en ligne de commande
-if len(sys.argv) != 2:
-    print("Veuillez fournir l'ID de l'employé en argument.")
-else:
+    employee_response = requests.get(employee_url)
+    employee_data = employee_response.json()
+
+    if employee_response.status_code == 200:
+        employee_name = employee_data.get('name')
+
+    todos_response = requests.get(todos_url)
+    todos_data = todos_response.json()
+
+    if todos_response.status_code == 200:
+        total_tasks = len(todos_data)
+        completed_tasks = 0
+    for task in todos_data:
+        completed_tasks += task['completed']
+
+    print("Employee {} is done with tasks({}/{}):"
+          .format(employee_name, completed_tasks, total_tasks))
+
+    for task in todos_data:
+        if task['completed']:
+            print("\t {}".format(task['title']))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("error")
+        sys.exit(1)
+
     employee_id = int(sys.argv[1])
-    obtenir
+    to_do(employee_id)
